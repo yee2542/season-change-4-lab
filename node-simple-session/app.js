@@ -2,6 +2,7 @@ const path = require('path')
 const express = require('express')
 const session = require('express-session')
 const bodyParser = require('body-parser')
+// const morgan = require('morgan')
 
 const authen = require('./authen')
 
@@ -13,6 +14,7 @@ app.use(session({
   saveUninitialized: false
 }))
 
+// app.use(morgan())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
