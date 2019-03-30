@@ -8,11 +8,8 @@ const authen = require('./authen')
 
 const app = express()
 
-app.use(session({
-  secret: 'secretja',
-  resave: false,
-  saveUninitialized: false
-}))
+const configSession = require('./session')
+app.use(session(configSession))
 
 // app.use(morgan())
 app.use(bodyParser.json())
@@ -28,7 +25,6 @@ app.post('/login', (req, res) => {
   authen(req.body.username, req.body.password, (state) => {
     if (state) {
       req.session.username = state
-    } else {
     }
   })
   res.redirect('/login/callback')
@@ -37,17 +33,17 @@ app.post('/login', (req, res) => {
 app.get('/login/callback', (req, res) => {
   if (req.session) {
     if (req.session.username) {
-      res.redirect('/user')
+      return res.redirect('/user')
     }
   } else {
-    res.redirect('/login')
+    return res.redirect('/login')
   }
 })
 
 app.get('/user', (req, res) => {
   if (req.session) {
     if (req.session.username) {
-      res.send(req.session.username)
+      return res.send(req.session.username)
     }
   }
   res.redirect('/login')
@@ -57,22 +53,4 @@ const cluster = require('cluster')
 const numCPUs = 3
 const http = require('http')
 const server = http.createServer(app)
-
-require('sticky-cluster')(
-
-  // server initialization function
-  callback => {
-    // configure an app
-    // do some async stuff if needed
-
-    // don't do server.listen(), just pass the server instance into the callback
-    callback(server)
-  },
-
-  // options
-  {
-    concurrency: 4,
-    port: 8081,
-    // debug: true
-  }
-)
+server.listen(8080)
