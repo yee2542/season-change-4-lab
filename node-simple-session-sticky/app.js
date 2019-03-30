@@ -53,18 +53,14 @@ app.get('/user', (req, res) => {
   res.redirect('/login')
 })
 
-const cluster = require('cluster')
-const numCPUs = 3
 const http = require('http')
 const server = http.createServer(app)
 
 require('sticky-cluster')(
-
   // server initialization function
   callback => {
     // configure an app
     // do some async stuff if needed
-
     // don't do server.listen(), just pass the server instance into the callback
     callback(server)
   },
@@ -72,7 +68,7 @@ require('sticky-cluster')(
   // options
   {
     concurrency: 4,
-    port: 8081,
-    // debug: true
+    port: 8080,
+    debug: true
   }
 )
