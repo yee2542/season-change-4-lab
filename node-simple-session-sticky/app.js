@@ -57,36 +57,22 @@ const cluster = require('cluster')
 const numCPUs = 3
 const http = require('http')
 const server = http.createServer(app)
-const sticky = require('sticky-session')
 
-// cluster listener
-if (cluster.isMaster) {
-  console.log(`Master ${process.pid} is running`)
-  process.title = 'wmc : master process'
+require('sticky-cluster')(
 
-  // fork workers
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork()
+  // server initialization function
+  callback => {
+    // configure an app
+    // do some async stuff if needed
+
+    // don't do server.listen(), just pass the server instance into the callback
+    callback(server)
+  },
+
+  // options
+  {
+    concurrency: 4,
+    port: 8081,
+    // debug: true
   }
-  sticky.listen(server, 8081, () => {
-    console.log(`start server PID ${process.pid}`)
-  })
-
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`worker ${worker.process.pid} died`)
-  })
-} else {
-  // process name
-  process.title = 'wmc : threads process'
-
-  // server listen threads
-
-  server.listen(8081, () => {
-    console.log(`start server PID ${process.pid}`)
-  })
-}
-
-// BOT ENV
-if (process.env.BOT === 'true') {
-  require('./tools/register-test')()
-}
+)
