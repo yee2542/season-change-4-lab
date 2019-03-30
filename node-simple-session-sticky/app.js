@@ -20,6 +20,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(express.static('public'))
 
+app.use(express.static('public'))
+
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/login.html'))
 })
@@ -28,7 +30,6 @@ app.post('/login', (req, res) => {
   authen(req.body.username, req.body.password, (state) => {
     if (state) {
       req.session.username = state
-    } else {
     }
   })
   res.redirect('/login/callback')
@@ -37,17 +38,17 @@ app.post('/login', (req, res) => {
 app.get('/login/callback', (req, res) => {
   if (req.session) {
     if (req.session.username) {
-      res.redirect('/user')
+      return res.redirect('/user')
     }
   } else {
-    res.redirect('/login')
+    return res.redirect('/login')
   }
 })
 
 app.get('/user', (req, res) => {
   if (req.session) {
     if (req.session.username) {
-      res.send(req.session.username)
+      return res.send(req.session.username)
     }
   }
   res.redirect('/login')
