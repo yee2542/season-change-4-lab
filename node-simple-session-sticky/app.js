@@ -20,8 +20,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(express.static('public'))
 
-app.use(express.static('public'))
-
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/login.html'))
 })
