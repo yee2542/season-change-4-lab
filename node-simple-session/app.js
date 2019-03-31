@@ -28,7 +28,6 @@ app.post('/login', (req, res) => {
   authen(req.body.username, req.body.password, (state) => {
     if (state) {
       req.session.username = state
-    } else {
     }
   })
   res.redirect('/login/callback')
